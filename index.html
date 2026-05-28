@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDPR Training & Assessment</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+.app{max-width:720px;margin:0 auto;padding:2rem 1rem}
+h1{font-size:22px;font-weight:600;margin-bottom:4px}
+.subtitle{font-size:14px;color:#666;margin-bottom:1.5rem}
+
+.prog-bar{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff}
+.prog-seg{flex:1;padding:9px 4px;text-align:center;font-size:11px;font-weight:600;color:#888;cursor:pointer;transition:background 0.15s;border-right:1px solid #ddd}
+.prog-seg:last-child{border-right:none}
+.prog-seg.active{background:#1a1a1a;color:#fff}
+.prog-seg.done{background:#e1f5ee;color:#085041}
+
+.module-nav{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.mod-btn{padding:5px 12px;font-size:12px;font-weight:500;border:1px solid #ccc;border-radius:20px;cursor:pointer;background:#fff;color:#666;transition:all 0.15s}
+.mod-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.mod-btn.done{background:#e1f5ee;color:#085041;border-color:#5dcaa5}
+
+.card{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1.75rem;margin-bottom:1rem}
+.slide-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.slide-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#e1f5ee;color:#085041}
+.slide-module-tag{font-size:11px;padding:3px 10px;border-radius:20px;background:#f0f0ee;color:#666}
+.slide-num{font-size:12px;color:#999;margin-left:auto}
+.slide-title{font-size:20px;font-weight:600;margin-bottom:1rem;line-height:1.3;color:#1a1a1a}
+.slide-body{font-size:14px;line-height:1.8;color:#444}
+.slide-body ul{padding-left:1.2rem}
+.slide-body li{margin-bottom:6px}
+.slide-body strong{color:#1a1a1a;font-weight:600}
+.def-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin-top:10px}
+.def-item{background:#f8f8f6;border-radius:8px;padding:8px 10px;font-size:13px;color:#444}
+.def-item strong{display:block;font-size:11px;font-weight:600;color:#1a1a1a;margin-bottom:2px}
+.num-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#e1f5ee;color:#085041;font-size:11px;font-weight:700;flex-shrink:0;margin-right:8px}
+.qa-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #eee}
+.qa-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.qa-q{font-weight:600;color:#1a1a1a;margin-bottom:4px;font-size:14px}
+.qa-a{font-size:13px;color:#555}
+.principle-card{display:flex;gap:12px;align-items:flex-start;padding:10px;background:#f8f8f6;border-radius:8px;margin-bottom:8px;font-size:13px;color:#444}
+.practice-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;padding:10px;background:#f8f8f6;border-radius:8px;font-size:13px;color:#444}
+.right-card{border:1px solid #e0e0e0;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.right-title{font-weight:600;color:#1a1a1a;font-size:13px;margin-bottom:3px}
+.warning-box{background:#faeeda;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:13px;color:#633806}
+.info-box{background:#e6f1fb;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:13px;color:#0c447c}
+
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid #ccc;background:#fff;color:#1a1a1a;transition:background 0.15s;font-family:inherit}
+.btn:hover{background:#f5f5f3}
+.btn-primary{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.btn-primary:hover{background:#333}
+.btn:disabled{opacity:0.35;cursor:not-allowed}
+.slide-counter{font-size:12px;color:#888}
+
+.quiz-q{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.q-meta{font-size:11px;color:#999;margin-bottom:6px;display:flex;gap:8px;flex-wrap:wrap}
+.q-module-tag{background:#f0f0ee;padding:2px 8px;border-radius:20px;font-weight:500}
+.q-text{font-size:15px;font-weight:600;margin-bottom:1rem;line-height:1.4;color:#1a1a1a}
+.option{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:8px;border:1px solid #e0e0e0;margin-bottom:6px;cursor:pointer;font-size:13px;line-height:1.5;color:#444;transition:background 0.1s}
+.option:hover{background:#f8f8f6}
+.option.selected{border-color:#1a1a1a;background:#f8f8f6}
+.option.correct{background:#e1f5ee;border-color:#1d9e75;color:#085041}
+.option.wrong{background:#fcebeb;border-color:#e24b4a;color:#a32d2d}
+.opt-letter{width:20px;height:20px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;color:#555}
+.option.selected .opt-letter{background:#1a1a1a;color:#fff}
+.fb{padding:9px 12px;border-radius:8px;font-size:12px;margin-top:8px;line-height:1.5}
+.fb-ok{background:#e1f5ee;color:#085041}
+.fb-no{background:#fcebeb;color:#791f1f}
+
+.result-hero{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:2rem;text-align:center;margin-bottom:1rem}
+.score-ring{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;margin:0 auto 1.25rem;font-size:26px;font-weight:700}
+.ring-pass{background:#e1f5ee;color:#085041}
+.ring-fail{background:#fcebeb;color:#a32d2d}
+.result-title{font-size:20px;font-weight:600;margin-bottom:6px}
+.result-sub{font-size:13px;color:#666;margin-bottom:1.25rem}
+.mod-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;font-size:13px}
+.mod-row:last-child{border-bottom:none}
+
+.email-form{background:#f8f8f6;border-radius:8px;padding:1.25rem;margin-top:1rem;text-align:left}
+.form-label{font-size:12px;color:#666;margin-bottom:5px;display:block;font-weight:500}
+.form-input{width:100%;padding:8px 12px;border:1px solid #ccc;border-radius:8px;background:#fff;color:#1a1a1a;font-size:13px;margin-bottom:10px;font-family:inherit}
+.form-input:focus{outline:none;border-color:#1a1a1a}
+.toast{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:500;margin-top:12px;display:none}
+.toast-ok{background:#e1f5ee;color:#085041;border:1px solid #1d9e75}
+.toast-err{background:#fcebeb;color:#791f1f;border:1px solid #e24b4a}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <h1>GDPR Awareness Training</h1>
+  <p class="subtitle">Complete all 4 modules, then pass the assessment to receive your certificate.</p>
+
+  <div class="prog-bar">
+    <div class="prog-seg active" id="ps-0" onclick="jumpPhase(0)">Module 1</div>
+    <div class="prog-seg" id="ps-1" onclick="jumpPhase(1)">Module 2</div>
+    <div class="prog-seg" id="ps-2" onclick="jumpPhase(2)">Module 3</div>
+    <div class="prog-seg" id="ps-3" onclick="jumpPhase(3)">Module 4</div>
+    <div class="prog-seg" id="ps-4" onclick="jumpPhase(4)">Quiz</div>
+    <div class="prog-seg" id="ps-5">Results</div>
+  </div>
+
+  <div id="main"></div>
+</div>
+
+<script>
+const MODULES = [
+  {
+    title: "GDPR course overview",
+    desc: "Introduction, key definitions and the 6 core principles",
+    slides: [
+      {
+        tag: "Introduction",
+        title: "Introduction to GDPR",
+        body: `The <strong>General Data Protection Regulation (GDPR)</strong> is EU Regulation 2016/679, in force since 25 May 2018. It replaced the 1995 Data Protection Directive and is the most comprehensive data protection law in the world.<br><br>
+        <ul>
+          <li>Applies to <strong>any organisation</strong> that processes personal data of EU/EEA residents — regardless of where the organisation is based</li>
+          <li>Regulates how personal data is collected, stored, used, shared and deleted</li>
+          <li>Gives individuals (data subjects) strong enforceable rights over their data</li>
+          <li>Enforced by national <strong>Data Protection Authorities (DPAs)</strong> such as the ICO (UK), CNIL (France), BfDI (Germany)</li>
+          <li>Fines reach up to <strong>€20 million or 4% of global annual turnover</strong> — whichever is higher</li>
+        </ul>
+        <div class="info-box">GDPR is not just an IT issue — it applies to every person in every department who handles personal data in any form.</div>`
+      },
+      {
+        tag: "7 key questions",
+        title: "7 key questions and answers",
+        body: `<div class="qa-item"><div class="qa-q">1. What does GDPR stand for?</div><div class="qa-a">General Data Protection Regulation — EU law that governs how organisations process personal data of individuals in the EEA.</div></div>
+        <div class="qa-item"><div class="qa-q">2. Who does GDPR apply to?</div><div class="qa-a">Any organisation (regardless of location) that processes personal data of people in the EU/EEA — including UK organisations under UK GDPR post-Brexit.</div></div>
+        <div class="qa-item"><div class="qa-q">3. What is personal data?</div><div class="qa-a">Any information relating to an identified or identifiable natural person — name, email, IP address, location data, photographs, and much more.</div></div>
+        <div class="qa-item"><div class="qa-q">4. What are the consequences of non-compliance?</div><div class="qa-a">Fines up to €20M or 4% of global annual turnover, plus reputational damage, regulatory investigations, and civil claims from data subjects.</div></div>
+        <div class="qa-item"><div class="qa-q">5. Do I need consent to process data?</div><div class="qa-a">Not always. Consent is just one of 6 lawful bases. You need at least one lawful basis before processing — consent is often not the most appropriate choice.</div></div>
+        <div class="qa-item"><div class="qa-q">6. How long can we keep personal data?</div><div class="qa-a">Only as long as necessary for the purpose it was collected. You must have a documented retention schedule and delete data when it is no longer needed.</div></div>
+        <div class="qa-item"><div class="qa-q">7. What do I do if there is a data breach?</div><div class="qa-a">Report it internally immediately. If it poses a risk to individuals' rights and freedoms, notify your DPA within 72 hours of becoming aware.</div></div>`
+      },
+      {
+        tag: "Personal data",
+        title: "What is personal data?",
+        body: `Personal data is <strong>any information relating to an identified or identifiable natural person</strong> (the data subject). A person is identifiable if they can be singled out directly or indirectly.<br><br>
+        <strong>Common examples of personal data:</strong>
+        <ul>
+          <li>Name, home address, email address, phone number</li>
+          <li>National ID number, passport number, date of birth</li>
+          <li>IP address, cookie identifiers, device IDs, online identifiers</li>
+          <li>Location data (GPS coordinates, geolocation history)</li>
+          <li>Photographs, CCTV footage, voice recordings</li>
+          <li>Employment records, salary information, performance reviews</li>
+          <li>Bank account details, credit card numbers</li>
+        </ul><br>
+        <strong>Special category (sensitive) personal data</strong> — requires extra protection and stricter legal bases:
+        <ul>
+          <li>Racial or ethnic origin</li>
+          <li>Political opinions, religious or philosophical beliefs</li>
+          <li>Trade union membership</li>
+          <li>Health data, genetic data, biometric data used for identification</li>
+          <li>Data concerning sex life or sexual orientation</li>
+        </ul>
+        <div class="warning-box">Special category data has stricter processing requirements — an additional legal basis from Article 9 is required on top of a standard Article 6 lawful basis.</div>`
+      },
+      {
+        tag: "18 definitions",
+        title: "18 key GDPR definitions",
+        body: `<div class="def-grid">
+          <div class="def-item"><strong>Personal data</strong>Any info relating to an identifiable living person</div>
+          <div class="def-item"><strong>Data subject</strong>The individual whose data is being processed</div>
+          <div class="def-item"><strong>Processing</strong>Any operation on personal data (collect, store, use, share, delete…)</div>
+          <div class="def-item"><strong>Data controller</strong>Decides why and how personal data is processed</div>
+          <div class="def-item"><strong>Data processor</strong>Processes data on behalf of a controller</div>
+          <div class="def-item"><strong>Consent</strong>Freely given, specific, informed and unambiguous agreement</div>
+          <div class="def-item"><strong>Lawful basis</strong>One of 6 legal grounds required before processing</div>
+          <div class="def-item"><strong>Special category data</strong>Sensitive data needing extra legal protection</div>
+          <div class="def-item"><strong>DPA</strong>Data Protection Authority — national regulator (e.g. ICO)</div>
+          <div class="def-item"><strong>DPO</strong>Data Protection Officer — oversees GDPR compliance internally</div>
+          <div class="def-item"><strong>Data breach</strong>Security incident affecting personal data</div>
+          <div class="def-item"><strong>DPIA</strong>Data Protection Impact Assessment — risk assessment for high-risk processing</div>
+          <div class="def-item"><strong>Privacy notice</strong>Transparency information given to data subjects</div>
+          <div class="def-item"><strong>Retention period</strong>How long data is kept before deletion</div>
+          <div class="def-item"><strong>Anonymisation</strong>Irreversibly removing all identifying information</div>
+          <div class="def-item"><strong>Pseudonymisation</strong>Replacing identifying info with a pseudonym; reversible</div>
+          <div class="def-item"><strong>Third party</strong>Any entity other than controller, processor or data subject</div>
+          <div class="def-item"><strong>Cross-border transfer</strong>Sending personal data outside the EEA</div>
+        </div>`
+      },
+      {
+        tag: "6 principles",
+        title: "The 6 GDPR principles",
+        body: `Article 5 of GDPR sets out 6 principles that must govern <em>all</em> processing of personal data. Every processing activity must comply with all of them:<br><br>
+        <div class="principle-card"><span class="num-badge">1</span><span><strong>Lawfulness, fairness and transparency</strong> — Process data legally, fairly, and openly. Data subjects must know how their data is used.</span></div>
+        <div class="principle-card"><span class="num-badge">2</span><span><strong>Purpose limitation</strong> — Collect data for specified, explicit, and legitimate purposes only. Do not use it for something different later without a fresh legal basis.</span></div>
+        <div class="principle-card"><span class="num-badge">3</span><span><strong>Data minimisation</strong> — Only collect what is adequate, relevant, and limited to what is strictly necessary for the stated purpose.</span></div>
+        <div class="principle-card"><span class="num-badge">4</span><span><strong>Accuracy</strong> — Keep personal data accurate and up to date. Take reasonable steps to erase or rectify inaccurate data without delay.</span></div>
+        <div class="principle-card"><span class="num-badge">5</span><span><strong>Storage limitation</strong> — Do not keep data longer than necessary for its purpose. Maintain retention schedules and delete data on time.</span></div>
+        <div class="principle-card"><span class="num-badge">6</span><span><strong>Integrity and confidentiality (security)</strong> — Protect data against unauthorised access, accidental loss, or destruction using appropriate technical and organisational measures.</span></div>
+        <div class="info-box">A 7th meta-principle — <strong>accountability</strong> (Article 5(2)) — requires you to be able to actively demonstrate compliance with all of the above.</div>`
+      }
+    ]
+  },
+  {
+    title: "GDPR in the workplace",
+    desc: "Best practices for employees and customer-facing roles",
+    slides: [
+      {
+        tag: "Best practices",
+        title: "10 employee best practices you should adopt now",
+        body: `<div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">1</span><span><strong>Apply data minimisation always.</strong> Only collect and process the personal data you genuinely need for the task at hand. If in doubt, collect less.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">2</span><span><strong>Lock your screen.</strong> When leaving your desk — even briefly — lock your computer. Never leave personal data visible on an unattended screen.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">3</span><span><strong>Use strong, unique passwords.</strong> Use a password manager. Never share login credentials with colleagues under any circumstances.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">4</span><span><strong>Check before you send.</strong> Always double-check email recipients before sending personal data. One wrong address is a reportable personal data breach.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">5</span><span><strong>Store data in approved systems only.</strong> Never save personal data to personal devices, unapproved cloud services, or USB drives.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">6</span><span><strong>Encrypt sensitive data.</strong> When sharing or storing personal data, use encrypted channels and storage as required by your IT policy.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">7</span><span><strong>Report breaches immediately.</strong> Do not wait to see if anything happens. Report to your manager or DPO the moment you discover a potential breach.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">8</span><span><strong>Follow retention schedules.</strong> Do not hoard data. Delete personal data when the retention period ends — refer to the company retention schedule.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">9</span><span><strong>Handle printed documents securely.</strong> Shred physical documents containing personal data. Do not leave them on desks or in shared spaces.</span></div>
+        <div class="practice-item"><span class="num-badge" style="background:#e6f1fb;color:#0c447c">10</span><span><strong>Ask before you act.</strong> If you are unsure whether something is permitted under GDPR, ask your DPO before proceeding — not after the fact.</span></div>`
+      },
+      {
+        tag: "Customer-facing roles",
+        title: "GDPR for employees dealing with customers",
+        body: `Customer-facing staff handle significant volumes of personal data. These obligations apply whenever you interact with customers or prospects:<br><br>
+        <strong>Transparency — tell customers upfront:</strong>
+        <ul>
+          <li>What data you are collecting and why (the specific purpose)</li>
+          <li>How long you will keep it and who you share it with</li>
+          <li>Their rights under GDPR (access, deletion, objection, etc.)</li>
+          <li>Always refer customers to the company privacy notice for full details</li>
+        </ul><br>
+        <strong>Consent and preference management:</strong>
+        <ul>
+          <li>Never pre-tick marketing consent boxes — consent must be actively given</li>
+          <li>Record consent accurately: when, how, and what it was given for</li>
+          <li>Honour opt-outs and unsubscribes immediately — no delays</li>
+          <li>Do not bundle consent — separate consents for separate purposes</li>
+        </ul><br>
+        <strong>Handling data subject requests (DSRs):</strong>
+        <ul>
+          <li>If a customer asks to see, correct, or delete their data — this is a formal legal request</li>
+          <li><strong>Escalate to your DPO or privacy team within 24 hours of receipt</strong></li>
+          <li>The company has 1 month to respond (extendable by 2 months for complex requests)</li>
+          <li>Never handle DSRs informally or verbally without proper documentation</li>
+        </ul>
+        <div class="warning-box">Withholding or delaying a response to a Subject Access Request (SAR) can lead to regulatory complaints, ICO investigations, and significant fines.</div>`
+      }
+    ]
+  },
+  {
+    title: "Data subjects' rights",
+    desc: "Overview and the 8 rights of individuals under GDPR",
+    slides: [
+      {
+        tag: "Overview",
+        title: "Overview of individual rights",
+        body: `Chapter III of GDPR (Articles 12–23) grants data subjects <strong>8 enforceable rights</strong> over their personal data. Organisations must be able to facilitate each of these rights.<br><br>
+        <strong>General principles for handling rights requests:</strong>
+        <ul>
+          <li>Respond <strong>without undue delay</strong> and within <strong>1 month</strong> of receipt (extendable to 3 months for complex or numerous requests)</li>
+          <li>Responses must be provided <strong>free of charge</strong> in most cases — charges only permitted for manifestly unfounded or excessive requests</li>
+          <li>Verify the requester's identity before releasing data — but do not ask for more than is necessary</li>
+          <li>If you cannot comply, you must explain why and inform the data subject of their right to complain to a supervisory authority</li>
+          <li>Keep comprehensive records of all requests received and how they were handled</li>
+        </ul>
+        <div class="info-box">Rights are not absolute — some can be restricted in specific circumstances (e.g. for law enforcement, legal proceedings, or public interest tasks). Always consult your DPO if unsure whether a restriction applies.</div>`
+      },
+      {
+        tag: "8 rights",
+        title: "The 8 rights of individuals explained",
+        body: `<div class="right-card"><div class="right-title">1. Right of access (Article 15)</div>Individuals can request a copy of all personal data held about them — a Subject Access Request (SAR). Must be fulfilled within 1 month. Can only be refused if the request is "manifestly unfounded or excessive."</div>
+        <div class="right-card"><div class="right-title">2. Right to rectification (Article 16)</div>Individuals can ask you to correct inaccurate or incomplete personal data. You must act without undue delay and notify any third parties you have shared the data with.</div>
+        <div class="right-card"><div class="right-title">3. Right to erasure / "right to be forgotten" (Article 17)</div>Individuals can request deletion of their data in specific circumstances — e.g. data is no longer necessary, consent has been withdrawn, or data was unlawfully processed. This is not an absolute right.</div>
+        <div class="right-card"><div class="right-title">4. Right to restrict processing (Article 18)</div>Individuals can ask you to pause processing in certain situations — e.g. while accuracy is being contested. You may continue to store the data but must not actively use it.</div>
+        <div class="right-card"><div class="right-title">5. Right to data portability (Article 20)</div>Individuals can receive their personal data in a structured, commonly used, machine-readable format and transfer it to another controller. Applies to data processed by consent or by contract using automated means.</div>
+        <div class="right-card"><div class="right-title">6. Right to object (Article 21)</div>Individuals can object to processing based on legitimate interests or for direct marketing purposes. For direct marketing, you must stop immediately and unconditionally — there are no grounds to override this.</div>
+        <div class="right-card"><div class="right-title">7. Rights related to automated decision-making (Article 22)</div>Individuals have the right not to be subject to solely automated decisions that produce legal or similarly significant effects. They can request human review of automated decisions.</div>
+        <div class="right-card"><div class="right-title">8. Right to be informed (Articles 13 & 14)</div>Individuals must be told how their data is used — at the point of collection when data is obtained directly (Art 13), or as soon as reasonably practicable when obtained indirectly (Art 14).</div>`
+      }
+    ]
+  },
+  {
+    title: "Data controllers and processors",
+    desc: "Roles, obligations, breaches and cross-border transfers",
+    slides: [
+      {
+        tag: "Controllers",
+        title: "Who is a data controller?",
+        body: `A <strong>data controller</strong> is the natural or legal person, public authority, agency, or other body that determines the <strong>purposes and means</strong> of processing personal data (Article 4(7)).<br><br>
+        <strong>Key indicators that you are a controller:</strong>
+        <ul>
+          <li>You decide <em>why</em> personal data is collected (the purpose)</li>
+          <li>You decide <em>how</em> personal data is processed</li>
+          <li>You have a direct relationship with data subjects</li>
+          <li>You bear primary legal accountability and liability under GDPR</li>
+        </ul><br>
+        <strong>Joint controllers (Article 26)</strong> arise when two or more controllers jointly determine the purposes and means of processing. They must have a transparent arrangement defining their respective GDPR responsibilities.<br><br>
+        <strong>Practical examples of controllers:</strong> A business collecting customer data, an employer holding employee HR records, a hospital processing patient records, a charity holding donor information.
+        <div class="warning-box">Most organisations are data controllers for personal data they hold about employees, customers, and prospects — and carry the full weight of GDPR obligations as a result.</div>`
+      },
+      {
+        tag: "Controller obligations",
+        title: "Controller obligations",
+        body: `As a data controller, your primary obligations under GDPR include:<br><br>
+        <ul>
+          <li><strong>Identify and document a lawful basis</strong> for each processing activity before it begins (Article 6)</li>
+          <li><strong>Provide privacy notices</strong> to data subjects at the point of data collection (Articles 13 & 14)</li>
+          <li><strong>Maintain Records of Processing Activities (ROPA)</strong> — Article 30 requires a written record of all processing activities carried out</li>
+          <li><strong>Respond to data subject rights requests</strong> within the statutory timeframes (generally 1 month)</li>
+          <li><strong>Conduct DPIAs</strong> (Data Protection Impact Assessments) before undertaking high-risk processing (Article 35)</li>
+          <li><strong>Appoint a DPO</strong> if required (public authorities, large-scale processing of special category data, or large-scale systematic monitoring)</li>
+          <li><strong>Implement privacy by design and by default</strong> — embed data protection into systems and processes from the outset (Article 25)</li>
+          <li><strong>Enter into written Data Processing Agreements</strong> with all third-party processors (Article 28)</li>
+          <li><strong>Notify data breaches</strong> to the DPA within 72 hours and to affected individuals where required</li>
+        </ul>`
+      },
+      {
+        tag: "Data security",
+        title: "Data security obligations",
+        body: `Article 32 requires both controllers and processors to implement <strong>appropriate technical and organisational measures</strong> to ensure a level of security appropriate to the risk posed by the processing.<br><br>
+        <strong>Technical measures include:</strong>
+        <ul>
+          <li>Encryption of personal data at rest and in transit</li>
+          <li>Pseudonymisation where appropriate to reduce risk</li>
+          <li>Strict access controls, role-based permissions, and multi-factor authentication (MFA)</li>
+          <li>Regular security testing, penetration testing, and vulnerability assessments</li>
+          <li>Secure deletion and certified disposal of data and hardware</li>
+        </ul><br>
+        <strong>Organisational measures include:</strong>
+        <ul>
+          <li>Staff GDPR awareness training (such as this course)</li>
+          <li>Documented data protection policies and procedures</li>
+          <li>Confidentiality agreements for staff handling personal data</li>
+          <li>Incident response and data breach management plans</li>
+          <li>Rigorous vendor and supplier due diligence processes</li>
+        </ul>
+        <div class="info-box">Security is risk-based — you assess the nature, scope, context, and purposes of your processing to determine appropriate measures. What is "appropriate" evolves as technology and threat landscapes change.</div>`
+      },
+      {
+        tag: "Breach reporting",
+        title: "Reporting personal data breaches",
+        body: `A <strong>personal data breach</strong> is any security incident leading to accidental or unlawful destruction, loss, alteration, unauthorised disclosure of, or access to personal data (Article 4(12)).<br><br>
+        <strong>3-tier response framework:</strong>
+        <div class="principle-card"><span class="num-badge" style="background:#faece7;color:#712b13">1</span><span><strong>Internal record — always required.</strong> Document ALL breaches in your internal breach register, even low-severity incidents that are not reportable externally.</span></div>
+        <div class="principle-card"><span class="num-badge" style="background:#faece7;color:#712b13">2</span><span><strong>Notify the DPA — within 72 hours (Article 33).</strong> Required when the breach is likely to result in a risk to the rights and freedoms of individuals. The 72-hour clock starts when you become aware of the breach.</span></div>
+        <div class="principle-card"><span class="num-badge" style="background:#faece7;color:#712b13">3</span><span><strong>Notify affected individuals — without undue delay (Article 34).</strong> Required when the breach is likely to result in a <em>high</em> risk to those individuals' rights and freedoms.</span></div>
+        <br>
+        <strong>Common breach types:</strong> Lost or stolen devices, misdirected emails, phishing attacks, ransomware, unauthorised insider access, accidental online publication of personal data.
+        <div class="warning-box">Delaying breach notification — even by a matter of hours — can significantly increase regulatory fines and demonstrates a lack of accountability. Report first, investigate simultaneously.</div>`
+      },
+      {
+        tag: "Processor obligations",
+        title: "Processor obligations",
+        body: `A <strong>data processor</strong> processes personal data solely on behalf of a controller and under their instructions (e.g. cloud providers, payroll services, marketing agencies, IT support firms).<br><br>
+        <strong>Key processor obligations under Article 28:</strong>
+        <ul>
+          <li>Only process data <strong>on documented instructions</strong> from the controller — and alert the controller if an instruction violates GDPR</li>
+          <li>Ensure <strong>staff confidentiality</strong> — all personnel with access to personal data must be bound by confidentiality obligations</li>
+          <li>Implement <strong>appropriate technical and organisational security measures</strong> as required by Article 32</li>
+          <li>Not engage <strong>sub-processors without prior specific or general written authorisation</strong> from the controller</li>
+          <li>Assist the controller in responding to <strong>data subject rights requests</strong></li>
+          <li>Assist with <strong>security obligations, breach notification, DPIAs, and prior consultation</strong></li>
+          <li><strong>Delete or return</strong> all personal data at the end of the service contract, as instructed by the controller</li>
+          <li>Make available all information necessary to <strong>demonstrate compliance</strong> and allow for audits</li>
+        </ul>
+        <div class="info-box">All controller-processor relationships must be governed by a written <strong>Data Processing Agreement (DPA)</strong> setting out the subject matter, duration, nature, and purpose of processing. This is mandatory under GDPR Article 28(3).</div>`
+      },
+      {
+        tag: "Cross-border transfers",
+        title: "Cross-border data transfers",
+        body: `Transferring personal data <strong>outside the EEA</strong> is restricted unless an appropriate safeguard or exception applies. Chapter V of GDPR (Articles 44–50) governs international transfers.<br><br>
+        <strong>Legal mechanisms for international transfers:</strong>
+        <ul>
+          <li><strong>Adequacy decision</strong> — The European Commission has formally decided the destination country provides adequate protection (e.g. UK, Japan, South Korea, Canada in part, Switzerland). No additional safeguards needed.</li>
+          <li><strong>Standard Contractual Clauses (SCCs)</strong> — EU Commission-approved contractual terms between the exporter and importer. The most widely used mechanism globally. Updated SCCs were issued in June 2021.</li>
+          <li><strong>Binding Corporate Rules (BCRs)</strong> — DPA-approved internal rules for multinational groups to transfer data internally between group entities.</li>
+          <li><strong>Codes of conduct or certification mechanisms</strong> — Approved sector-specific codes or certification schemes with appropriate commitments from the recipient.</li>
+          <li><strong>Derogations (Article 49)</strong> — Used only in limited specific circumstances: explicit consent, performance of a contract, important public interest, legal claims, or vital interests.</li>
+        </ul>
+        <div class="warning-box">Following the Schrems II ruling (2020), transfers to the USA require a Transfer Impact Assessment (TIA) and supplementary measures alongside SCCs. The EU-US Data Privacy Framework (adopted July 2023) restored an adequacy mechanism for US companies that have self-certified under the Framework.</div>`
+      }
+    ]
+  }
+];
+
+const QUIZ = [
+  {m:0,q:"Which GDPR article sets out the 6 core data protection principles?",opts:["Article 4","Article 5","Article 6","Article 13"],a:1,exp:"Article 5 establishes the 6 principles: lawfulness/fairness/transparency, purpose limitation, data minimisation, accuracy, storage limitation, and integrity/confidentiality."},
+  {m:0,q:"Which of the following is NOT one of the 6 lawful bases for processing under Article 6?",opts:["Consent","Commercial advantage","Legal obligation","Legitimate interests"],a:1,exp:"Commercial advantage is not a lawful basis. The 6 bases are: consent, contract, legal obligation, vital interests, public task, and legitimate interests."},
+  {m:0,q:"Which type of personal data requires an additional legal basis from Article 9 to process?",opts:["Email addresses","Location data","Health and genetic data","Employment records"],a:2,exp:"Health, genetic, biometric, racial/ethnic origin, political opinions, religious beliefs, trade union membership, and data on sexual orientation are 'special category' data requiring an Article 9 condition."},
+  {m:0,q:"What does the GDPR principle of 'data minimisation' require?",opts:["Encrypting all data","Only keeping data for the minimum time","Collecting only what is necessary for the purpose","Minimising the number of data processors used"],a:2,exp:"Data minimisation means personal data must be adequate, relevant, and limited to what is necessary in relation to the purposes for which it is processed."},
+  {m:0,q:"What is pseudonymisation?",opts:["Permanently removing all identifying information","Replacing identifying info with a pseudonym so data cannot be attributed without additional info","Encrypting data with a public key","Deleting data after its initial processing is complete"],a:1,exp:"Pseudonymisation replaces directly identifying information with an artificial identifier (pseudonym). Unlike anonymisation, it is reversible using the additional 'key' information held separately."},
+  {m:1,q:"A colleague asks to borrow your login credentials to finish an urgent report. What should you do?",opts:["Share them just this once since it is urgent","Share them but change your password afterwards","Refuse and help them request their own authorised access","Send them via an encrypted message"],a:2,exp:"Sharing credentials violates security policies and GDPR accountability principles. You must refuse and help the colleague get their own properly authorised access through the correct channels."},
+  {m:1,q:"A customer calls and says 'please delete all data you have on me.' What is the correct first step?",opts:["Delete their data immediately","Explain that you are unable to do this","Escalate to your DPO or privacy team within 24 hours","Require them to submit the request in writing only before taking any action"],a:2,exp:"This is a formal data subject rights request (right to erasure). You must escalate to your DPO or privacy team within 24 hours. The organisation then has 1 month to respond formally."},
+  {m:1,q:"You are about to email a spreadsheet containing customer personal data. Which best practice applies?",opts:["Carefully check all recipient addresses before sending","Send it quickly since the matter is urgent","Use BCC instead of TO for the recipients","It is fine to send internally without additional checks"],a:0,exp:"Always double-check every recipient address before sending personal data. A misdirected email is one of the most common personal data breaches and may require notification to the ICO within 72 hours."},
+  {m:2,q:"How long does a controller generally have to respond to a Subject Access Request (SAR)?",opts:["7 days","14 days","1 month","3 months"],a:2,exp:"Under Article 12, controllers must respond to data subject requests without undue delay and within 1 month of receipt. This can be extended by a further 2 months for complex or multiple concurrent requests."},
+  {m:2,q:"An individual objects to receiving direct marketing emails from your organisation. What must you do?",opts:["Process any pending refunds first then remove them","Stop processing for that purpose immediately with no exceptions","Offer them a reduced frequency option as an alternative","Require a written request before taking any action"],a:1,exp:"Article 21(3) is absolute for direct marketing — you must stop processing personal data for that purpose immediately upon receiving the objection. There are no grounds to refuse or override this right."},
+  {m:2,q:"What is the 'right to data portability' under Article 20?",opts:["The right to access personal data from any geographic location","The right to receive personal data in a structured, portable format and transfer it to another controller","The right to carry a physical copy of your personal data","The right to transfer your account and data to another named person"],a:1,exp:"Article 20 gives individuals the right to receive their personal data in a structured, commonly used, machine-readable format and to transmit it to another controller. It applies to data processed by consent or contract using automated means."},
+  {m:3,q:"Within how many hours must a notifiable personal data breach be reported to the supervisory authority?",opts:["24 hours","48 hours","72 hours","7 days"],a:2,exp:"Article 33 requires notification to the supervisory authority within 72 hours of becoming aware of a notifiable breach. If you cannot meet this deadline, you must notify anyway and provide a written explanation of the delay."},
+  {m:3,q:"What document must govern all controller-processor relationships under GDPR Article 28?",opts:["A privacy notice served on the processor","A data sharing agreement","A written Data Processing Agreement (DPA)","A signed non-disclosure agreement (NDA)"],a:2,exp:"Article 28(3) requires that processing by a processor is governed by a binding contract or other legal act — a Data Processing Agreement — which sets out the subject matter, duration, nature, and purpose of the processing."},
+  {m:3,q:"Which of the following is a valid legal mechanism for transferring personal data outside the EEA?",opts:["A verbal agreement with the data recipient","Standard Contractual Clauses (SCCs) approved by the European Commission","A company internal policy document authorising the transfer","An internal email confirmation from senior management"],a:1,exp:"Standard Contractual Clauses (SCCs) are European Commission-approved contractual terms that provide appropriate safeguards for international data transfers. They are the most widely used transfer mechanism."},
+  {m:3,q:"What does a Data Protection Impact Assessment (DPIA) assess and when is it required?",opts:["Staff awareness levels; required annually for all organisations","The financial cost of a data breach; required when losses exceed €10,000","Risks to individuals' rights and freedoms; required before high-risk processing activities","Compliance with IT security standards; required before any new software is deployed"],a:2,exp:"A DPIA (Article 35) systematically identifies and minimises the data protection risks of proposed high-risk processing — for example large-scale processing of special category data, systematic public profiling, or use of new technologies with significant impact on individuals."}
+];
+
+const PASS = 11;
+const LETTERS = ['A','B','C','D'];
+const MOD_LABELS = ["M1","M2","M3","M4"];
+let phase = 0, moduleIdx = 0, slideIdx = 0;
+let answers = {}, revealed = {};
+
+function updateProg() {
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById('ps-' + i);
+    el.className = 'prog-seg';
+    if (i === phase) el.classList.add('active');
+    else if (i < phase) el.classList.add('done');
+  }
+}
+
+function jumpPhase(p) {
+  if (p >= phase && !(p < 4 && phase >= 4)) return;
+  if (p < 4) { phase = p; moduleIdx = p; slideIdx = 0; updateProg(); renderSlide(); }
+  else if (p === 4 && phase >= 4) { phase = 4; updateProg(); renderQuiz(); }
+}
+
+function totalSlides() {
+  let t = 0;
+  for (let m = 0; m < moduleIdx; m++) t += MODULES[m].slides.length;
+  return t + slideIdx + 1;
+}
+function grandTotal() { return MODULES.reduce((s,m) => s + m.slides.length, 0); }
+
+function renderSlide() {
+  const mod = MODULES[moduleIdx];
+  const slide = mod.slides[slideIdx];
+  const isLast = moduleIdx === MODULES.length - 1 && slideIdx === mod.slides.length - 1;
+  const isLastInMod = slideIdx === mod.slides.length - 1;
+
+  const modNav = MODULES.map((m,i) =>
+    `<button class="mod-btn${i===moduleIdx?' active':i<moduleIdx?' done':''}" onclick="goModule(${i})">${MOD_LABELS[i]}: ${m.title}</button>`
+  ).join('');
+
+  document.getElementById('main').innerHTML = `
+    <div style="margin-bottom:1rem">${modNav}</div>
+    <div class="card" style="min-height:320px;display:flex;flex-direction:column">
+      <div class="slide-eyebrow">
+        <span class="slide-tag">${slide.tag}</span>
+        <span class="slide-module-tag">${mod.title}</span>
+        <span class="slide-num">${slideIdx+1} / ${mod.slides.length}</span>
+      </div>
+      <div class="slide-title">${slide.title}</div>
+      <div class="slide-body" style="flex:1">${slide.body}</div>
+    </div>
+    <div class="nav-row">
+      <button class="btn" onclick="prevSlide()" ${moduleIdx===0&&slideIdx===0?'disabled':''}>← Back</button>
+      <span class="slide-counter">${totalSlides()} of ${grandTotal()} slides</span>
+      ${isLast
+        ? `<button class="btn btn-primary" onclick="startQuiz()">Start assessment →</button>`
+        : isLastInMod
+          ? `<button class="btn btn-primary" onclick="nextModule()">Next module →</button>`
+          : `<button class="btn btn-primary" onclick="nextSlide()">Next →</button>`}
+    </div>`;
+}
+
+function goModule(i) {
+  if (i > moduleIdx) return;
+  phase = i; moduleIdx = i; slideIdx = 0;
+  updateProg(); renderSlide();
+}
+function nextSlide() { slideIdx++; renderSlide(); }
+function prevSlide() {
+  if (slideIdx > 0) { slideIdx--; renderSlide(); }
+  else if (moduleIdx > 0) { moduleIdx--; phase = moduleIdx; slideIdx = MODULES[moduleIdx].slides.length - 1; updateProg(); renderSlide(); }
+}
+function nextModule() { moduleIdx++; phase = moduleIdx; slideIdx = 0; updateProg(); renderSlide(); }
+
+function startQuiz() { phase = 4; answers = {}; revealed = {}; updateProg(); renderQuiz(); }
+
+function renderQuiz() {
+  let html = '<div style="margin-bottom:1rem;font-size:13px;color:#666">Answer each question, check it, then move to the next. Submit once all ' + QUIZ.length + ' are answered.</div>';
+  QUIZ.forEach((q, qi) => {
+    html += `<div class="quiz-q">
+      <div class="q-meta"><span>Question ${qi+1} of ${QUIZ.length}</span><span class="q-module-tag">${MODULES[q.m].title}</span></div>
+      <div class="q-text">${q.q}</div>`;
+    q.opts.forEach((opt, oi) => {
+      let cls = 'option';
+      if (revealed[qi] !== undefined) {
+        if (oi === q.a) cls += ' correct';
+        else if (oi === answers[qi] && oi !== q.a) cls += ' wrong';
+      } else if (answers[qi] === oi) cls += ' selected';
+      const locked = revealed[qi] !== undefined;
+      html += `<div class="${cls}" onclick="${locked?'':'selectOpt('+qi+','+oi+')'}" style="${locked?'cursor:default':''}">
+        <span class="opt-letter">${LETTERS[oi]}</span>${opt}</div>`;
+    });
+    if (revealed[qi] !== undefined) {
+      const ok = answers[qi] === q.a;
+      html += `<div class="fb ${ok?'fb-ok':'fb-no'}">${ok?'✓ Correct':'✗ Incorrect'} — ${q.exp}</div>`;
+    } else if (answers[qi] !== undefined) {
+      html += `<div style="margin-top:8px"><button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="checkA(${qi})">Check answer</button></div>`;
+    }
+    html += '</div>';
+  });
+
+  const allRev = Object.keys(revealed).length === QUIZ.length;
+  html += `<div class="nav-row" style="margin-top:4px;padding-bottom:2rem">
+    <span class="slide-counter">${Object.keys(revealed).length} of ${QUIZ.length} questions answered</span>
+    <button class="btn btn-primary" onclick="showResults()" ${!allRev?'disabled':''}>Submit & see results →</button>
+  </div>`;
+  document.getElementById('main').innerHTML = html;
+}
+
+function selectOpt(qi, oi) {
+  if (revealed[qi] !== undefined) return;
+  answers[qi] = oi;
+  renderQuiz();
+  setTimeout(() => {
+    const qs = document.querySelectorAll('.quiz-q');
+    if (qs[qi]) qs[qi].scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 50);
+}
+
+function checkA(qi) {
+  revealed[qi] = true;
+  renderQuiz();
+  setTimeout(() => {
+    const qs = document.querySelectorAll('.quiz-q');
+    if (qs[qi]) qs[qi].scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 50);
+}
+
+function showResults() {
+  const score = QUIZ.reduce((s,q,i) => s + (answers[i]===q.a?1:0), 0);
+  const pct = Math.round(score/QUIZ.length*100);
+  const passed = score >= PASS;
+  phase = 5;
+  updateProg();
+
+  const modBreakdown = MODULES.map((mod, mi) => {
+    const qs = QUIZ.filter(q => q.m === mi);
+    const correct = qs.filter(q => answers[QUIZ.indexOf(q)] === q.a).length;
+    const col = correct === qs.length ? '#1d9e75' : correct >= Math.ceil(qs.length*0.5) ? '#1a1a1a' : '#e24b4a';
+    return `<div class="mod-row"><span style="color:#666">${mod.title}</span><span style="font-weight:600;color:${col}">${correct}/${qs.length}</span></div>`;
+  }).join('');
+
+  document.getElementById('main').innerHTML = `
+    <div class="result-hero">
+      <div class="score-ring ${passed?'ring-pass':'ring-fail'}">${pct}%</div>
+      <div class="result-title">${passed?'Assessment passed — well done':'Assessment not passed'}</div>
+      <div class="result-sub">${score} of ${QUIZ.length} correct &nbsp;·&nbsp; Pass mark: ${PASS}/${QUIZ.length} (${Math.round(PASS/QUIZ.length*100)}%)</div>
+      <div style="max-width:360px;margin:0 auto;text-align:left">${modBreakdown}</div>
+      ${!passed?`<button class="btn btn-primary" onclick="retake()" style="margin:1.5rem auto 0;display:flex">Retake assessment →</button>`:''}
+    </div>
+    ${passed?buildEmailForm(score,pct):''}`;
+}
+
+function retake() {
+  answers = {}; revealed = {};
+  phase = 4; updateProg(); renderQuiz();
+  window.scrollTo(0,0);
+}
+
+function buildEmailForm(score, pct) {
+  return `<div class="card">
+    <div style="font-size:15px;font-weight:600;margin-bottom:1rem">Send completion record to manager</div>
+    <label class="form-label">Your full name</label>
+    <input class="form-input" id="f-name" placeholder="Your full name" />
+    <label class="form-label">Your email address</label>
+    <input class="form-input" id="f-emp" placeholder="you@company.com" type="email" />
+    <label class="form-label">Manager's email address</label>
+    <input class="form-input" id="f-mgr" placeholder="manager@company.com" type="email" />
+    <button class="btn btn-primary" id="send-btn" onclick="sendEmail(${score},${pct})">Send completion record →</button>
+    <div id="toast" class="toast"></div>
+    <div id="manual-area"></div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POWER AUTOMATE CONFIGURATION
+// 1. Create an Instant Cloud Flow in Power Automate with trigger:
+//    "When an HTTP request is received"
+// 2. Paste the HTTP POST URL generated by that trigger below
+// 3. Save this file and re-upload to Azure Static Web Apps
+// ─────────────────────────────────────────────────────────────────────────────
+const POWER_AUTOMATE_URL = "https://defaultb084ff0296644e8b9f205ca1848289.40.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/3130d020368443c19315d03fd7f81247/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=0Vl4uqh2ARQdGENqQALbwx988-0d2EaYvLvgLfY-Euw";
+
+async function sendEmail(score, pct) {
+  const name = document.getElementById('f-name').value.trim();
+  const emp = document.getElementById('f-emp').value.trim();
+  const mgr = document.getElementById('f-mgr').value.trim();
+  if (!name||!emp||!mgr) { showToast('Please fill in all three fields before sending.','err'); return; }
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const breakdown = MODULES.map((mod,mi) => {
+    const qs = QUIZ.filter(q=>q.m===mi);
+    const correct = qs.filter(q=>answers[QUIZ.indexOf(q)]===q.a).length;
+    return `${mod.title}: ${correct}/${qs.length}`;
+  }).join(' | ');
+
+  const subject = `GDPR training completion — ${name} — ${today}`;
+  const body = `Dear Manager,\n\nThis is an automated notification that the following employee has successfully completed the GDPR Awareness Training and Assessment.\n\nEmployee: ${name}\nEmployee email: ${emp}\nDate completed: ${today}\nScore: ${score}/${QUIZ.length} (${pct}%)\nResult: PASSED\n\nModule breakdown:\n${breakdown}\n\nThis training covers:\n  Module 1: GDPR course overview (introduction, definitions, 6 principles)\n  Module 2: GDPR in the workplace (best practices, customer-facing roles)\n  Module 3: Data subjects' rights (the 8 individual rights)\n  Module 4: Data controllers and processors (obligations, security, breaches, cross-border transfers)\n\nPlease retain this record for compliance and audit purposes.\n\nThis message was sent automatically by the ABS Synergy GDPR Training System.`;
+
+  // Check URL has been configured
+  if (!POWER_AUTOMATE_URL || POWER_AUTOMATE_URL === "PASTE_YOUR_POWER_AUTOMATE_URL_HERE") {
+    showToast('Power Automate URL not yet configured. Use the manual copy option below.','err');
+    btn.disabled = false; btn.textContent = 'Send completion record →';
+    showManualFallback(mgr, subject, body);
+    return;
+  }
+
+  try {
+    const resp = await fetch(POWER_AUTOMATE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        staffName: name,
+        staffEmail: emp,
+        managerEmail: mgr,
+        score: score,
+        totalQuestions: QUIZ.length,
+        percentage: pct,
+        completionDate: today,
+        moduleBreakdown: breakdown,
+        emailSubject: subject,
+        emailBody: body
+      })
+    });
+
+    if (resp.ok || resp.status === 202) {
+      showToast('Completion record sent to manager successfully.','ok');
+      btn.textContent = 'Sent ✓';
+    } else {
+      throw new Error('Flow returned ' + resp.status);
+    }
+  } catch(e) {
+    showToast('Automatic send failed. Use the text below to send manually.','err');
+    btn.disabled = false; btn.textContent = 'Retry →';
+    showManualFallback(mgr, subject, body);
+  }
+}
+
+function showManualFallback(mgr, subject, body) {
+  document.getElementById('manual-area').innerHTML = `
+    <div style="margin-top:14px;font-size:12px;color:#666;margin-bottom:6px">Copy and email this to <strong style="color:#1a1a1a">${mgr}</strong>:</div>
+    <textarea style="width:100%;height:160px;font-size:11px;padding:8px;border:1px solid #ccc;border-radius:8px;background:#fff;color:#1a1a1a;font-family:monospace;line-height:1.5" readonly>Subject: ${subject}
+
+${body}</textarea>`;
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'toast toast-' + type;
+  t.style.display = 'block';
+  setTimeout(() => { if(t) t.style.display = 'none'; }, 5000);
+}
+
+updateProg();
+renderSlide();
+</script>
+</body>
+</html>
