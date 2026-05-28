@@ -562,8 +562,15 @@ function buildEmailForm(score, pct) {
     <input class="form-input" id="f-name" placeholder="Your full name" />
     <label class="form-label">Your email address</label>
     <input class="form-input" id="f-emp" placeholder="you@company.com" type="email" />
-    <label class="form-label">Manager's email address</label>
-    <input class="form-input" id="f-mgr" placeholder="manager@company.com" type="email" />
+    <label class="form-label">Select your manager</label>
+    <select class="form-input" id="f-mgr" style="background:white;cursor:pointer;">
+      <option value="">— Select your manager —</option>
+      <option value="leanne@synergybookkeeping.ie">Leanne Behan — Synergy Bookkeeping</option>
+      <option value="jerome@synergyup.com">Jerome O'Donovan — Synergy Up</option>
+      <option value="luke@synergystocktaking.ie">Luke Coady — Synergy Stocktaking</option>
+      <option value="rachel@synergystocktaking.ie">Rachel Conroy — Synergy Franchising</option>
+      <option value="mark@synergystocktaking.ie">Mark McCormack — IT</option>
+    </select>
     <button class="btn btn-primary" id="send-btn" onclick="sendEmail(${score},${pct})">Send completion record →</button>
     <div id="toast" class="toast"></div>
     <div id="manual-area"></div>
@@ -583,7 +590,7 @@ async function sendEmail(score, pct) {
   const name = document.getElementById('f-name').value.trim();
   const emp = document.getElementById('f-emp').value.trim();
   const mgr = document.getElementById('f-mgr').value.trim();
-  if (!name||!emp||!mgr) { showToast('Please fill in all three fields before sending.','err'); return; }
+  if (!name||!emp||!mgr) { showToast('Please fill in all fields and select your manager before sending.','err'); return; }
 
   const btn = document.getElementById('send-btn');
   btn.disabled = true; btn.textContent = 'Sending…';
