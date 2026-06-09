@@ -856,12 +856,14 @@ p{font-size:14px;color:var(--mt);line-height:1.7}
     <div class="info-box">
       Your manager has been notified automatically. Use the buttons above to save a personal copy of your certificate.
     </div>
+    <div id="aml-pass-review" style="margin-top:1.2rem"></div>
   </div>
 
   <!-- ══════════════════ FAIL ══════════════════ -->
   <div class="sec" id="aml-fail">
     <h2>Not quite — please try again</h2>
     <div id="aml-fail-bnr" class="banner banner-fail"></div>
+    <div id="aml-fail-review" style="margin:1.2rem 0"></div>
     <p style="margin-bottom:1.5rem;">Review the relevant slides and retry the quiz. You can retake it as many times as you need.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-p" onclick="retake('aml')"><i class="ti ti-refresh"></i> Retry assessment</button>
@@ -1292,12 +1294,14 @@ p{font-size:14px;color:var(--mt);line-height:1.7}
     <div class="info-box">
       Your manager has been notified automatically. Use the buttons above to save a personal copy of your certificate. This certificate is recommended for annual renewal.
     </div>
+    <div id="ff-pass-review" style="margin-top:1.2rem"></div>
   </div>
 
   <!-- ══════════════════ FAIL ══════════════════ -->
   <div class="sec" id="ff-fail">
     <h2>Not quite — please try again</h2>
     <div id="ff-fail-bnr" class="banner banner-fail"></div>
+    <div id="ff-fail-review" style="margin:1.2rem 0"></div>
     <p style="margin-bottom:1.5rem;">Review the relevant modules and retry the quiz. You can retake it as many times as you need.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-p" onclick="retake('ff')"><i class="ti ti-refresh"></i> Retry assessment</button>
@@ -1802,6 +1806,7 @@ p{font-size:14px;color:var(--mt);line-height:1.7}
     <button class="btn" onclick="showDash()"><i class="ti ti-layout-dashboard"></i> Portal</button>
   </div>
   <div class="info-box">Your manager has been notified automatically. Use the buttons above to save a personal copy of your certificate. GDPR certificate valid for 1 year — annual refresher training recommended.</div>
+  <div id="gd-pass-review" style="margin-top:1.2rem"></div>
 </div>
 
 <!-- FAIL -->
@@ -1809,6 +1814,7 @@ p{font-size:14px;color:var(--mt);line-height:1.7}
   <div class="slide-icon si-coral"><i class="ti ti-refresh"></i></div>
   <h2>Not quite &mdash; please try again</h2>
   <div id="gd-fail-bnr" class="bnr bnr-f"></div>
+  <div id="gd-fail-review" style="margin:1.2rem 0"></div>
   <p style="margin-bottom:1.4rem">Review the slides and retry. You can retake as many times as needed.</p>
   <div style="display:flex;gap:9px;flex-wrap:wrap">
     <button class="btn btn-p" onclick="retake('gd')"><i class="ti ti-refresh"></i> Retry assessment</button>
@@ -2075,7 +2081,7 @@ function makeModCard(course){
   const s       = STATE[course];
   const p       = pct(course);
   const status  = s.passed ? 'Completed' : s.slide > 0 ? 'In progress' : 'Not started';
-  const stCls   = s.passed ? 'st-done' : s.slide > 0 ? 'st-prog' : 'st-todo';
+  const stCls   = s.passed && !renewalDue ? 'st-done' : renewalDue || s.slide > 0 ? 'st-prog' : 'st-todo';
   const icons   = { aml:'ti-shield-check', ff:'ti-alert-triangle', gd:'ti-lock' };
   const colors  = { aml:'background:var(--gl);color:var(--gd)', ff:'background:var(--cl);color:var(--c)', gd:'background:var(--bl);color:var(--b)' };
   const titles  = { aml:'AML &amp; CTF Awareness', ff:'Financial Fraud Awareness', gd:'GDPR &amp; Data Protection' };
@@ -2087,9 +2093,13 @@ function makeModCard(course){
   const pills   = { aml:'20 Qs &middot; 30 min', ff:'20 Qs &middot; 45 min', gd:'25 Qs &middot; 60 min' };
   const resume  = s.passed ? 'View certificate' : s.slide > 0 ? `Resume from slide ${s.slide+1}` : 'Click to select &rsaquo;';
   const mandatory = getMandatory().includes(course);
-  const reqBadge  = mandatory
-    ? `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--gl);color:var(--gd);border:1px solid var(--gm);">&#10003; Mandatory</span>`
-    : `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--al);color:var(--a);border:1px solid #FAC775;">Optional &mdash; encouraged</span>`;
+  const renewalDue = isRenewalDue(course);
+  const reqBadge = renewalDue
+    ? `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--al);color:var(--a);border:1px solid #FAC775;">\u21bb Annual renewal due</span>`
+    : mandatory
+      ? `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--gl);color:var(--gd);border:1px solid var(--gm);">&#10003; Mandatory</span>`
+      : `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--al);color:var(--a);border:1px solid #FAC775;">Optional &mdash; encouraged</span>`;
+  const cardStatus = s.passed && !renewalDue ? 'Completed' : renewalDue ? 'Renewal due \u2014 click to retake' : s.slide > 0 ? 'In progress' : 'Not started';
   return `<div class="mod-card" id="mc-${course}" onclick="selectModule('${course}')">
     <div class="mod-check" id="mc-check-${course}">&#10003;</div>
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem">
@@ -2099,7 +2109,7 @@ function makeModCard(course){
     <div class="mod-title">${titles[course]}</div>
     <div class="mod-sub">${descs[course]}</div>
     <div class="mod-pills"><span class="mod-pill">${pills[course]}</span><span class="mod-pill">Pass 80%</span></div>
-    <div><span class="mod-status ${stCls}">${status} &mdash; ${p}%</span></div>
+    <div><span class="mod-status ${stCls}">${cardStatus} &mdash; ${p}%</span></div>
     <div class="mod-prog-bg"><div class="mod-prog-fill" style="width:${p}%;background:${s.passed?'var(--g)':s.slide>0?'#BA7517':'var(--br)'}"></div></div>
     <div style="font-size:12px;color:var(--ht);margin-top:.5rem">${resume}</div>
   </div>`;
@@ -2273,14 +2283,19 @@ function submitCourseQuiz(course){
   const ans   = STATE[course].quizAnswers;
   if(Object.keys(ans).length < total){ alert('Please answer all ' + total + ' questions.'); return; }
   let score = 0;
+  const wrongList = [];
   qs.forEach((q,qi) => {
     const sel = ans[qi], cor = q.c;
     document.querySelectorAll(`[id^="${course}_o${qi}_"]`).forEach(el => el.style.pointerEvents = 'none');
     const se = document.getElementById(`${course}_o${qi}_${sel}`);
     const ce = document.getElementById(`${course}_o${qi}_${cor}`);
     if(sel === cor){ score++; se.classList.remove('sel'); se.classList.add('cor'); }
-    else{ se.classList.remove('sel'); se.classList.add('wrg'); ce.classList.add('cor'); }
+    else{
+      se.classList.remove('sel'); se.classList.add('wrg'); ce.classList.add('cor');
+      wrongList.push({ q: q.q, yourAnswer: q.opts[sel], correctAnswer: q.opts[cor], e: q.e || '' });
+    }
   });
+  STATE[course].wrongList = wrongList;
   document.getElementById(course + '-q-sub').style.display = 'none';
   STATE[course].score = score;
   if(score >= QUIZ_PASS[course]) showCertPass(course, score);
@@ -2291,11 +2306,45 @@ function submitCourseQuiz(course){
 function retakeCourseQuiz(course){
   // Clear saved answers and restart fresh
   STATE[course].quizAnswers = {};
+  STATE[course].wrongList   = [];
   persist();
   buildQuiz(course, course + '-quiz-container');
   document.getElementById(course + '-q-sub').style.display = '';
   goSec(course + '-quiz');
   updateAssessmentBtn(course);
+}
+
+// Alias used by HTML onclick handlers
+function retake(course){ retakeCourseQuiz(course); }
+
+// Check if 11 months have passed since certification (renewal due)
+function isRenewalDue(course){
+  const s = STATE[course];
+  if(!s.passed || !s.certDate) return false;
+  const diffMs     = new Date() - new Date(s.certDate);
+  const diffMonths = diffMs / (1000 * 60 * 60 * 24 * 30.44);
+  return diffMonths >= 11;
+}
+
+// Build a question review panel showing wrong answers with correct answers and explanations
+function buildReview(qs, wrongList){
+  if(!wrongList || wrongList.length === 0){
+    return '<div style="background:var(--gl);border:1px solid var(--gm);border-radius:var(--rad);padding:14px 16px;display:flex;align-items:center;gap:10px;color:var(--gd);font-size:14px;font-weight:500"><i class="ti ti-circle-check" style="font-size:18px"></i> You answered every question correctly. Excellent work.</div>';
+  }
+  let html = '<div style="background:var(--sf);border:1px solid var(--br);border-radius:var(--rad);padding:16px">';
+  html += '<div style="font-weight:600;font-size:14px;margin-bottom:12px;color:var(--tx)">Questions answered incorrectly — ' + wrongList.length + ' of ' + qs.length + ':</div>';
+  wrongList.forEach(function(item, i){
+    html += '<div style="border:1px solid var(--br);border-radius:8px;padding:12px 14px;margin-bottom:10px;background:var(--bg)">';
+    html += '<div style="font-weight:500;font-size:13px;margin-bottom:8px;color:var(--tx)">' + (i+1) + '. ' + item.q + '</div>';
+    html += '<div style="font-size:13px;color:var(--c);margin-bottom:4px"><i class="ti ti-x" style="margin-right:4px"></i>Your answer: ' + item.yourAnswer + '</div>';
+    html += '<div style="font-size:13px;color:var(--g);margin-bottom:' + (item.e ? '8px' : '0') + '"><i class="ti ti-check" style="margin-right:4px"></i>Correct answer: ' + item.correctAnswer + '</div>';
+    if(item.e){
+      html += '<div style="font-size:12px;color:var(--mt);background:var(--sl);border-left:3px solid var(--b);padding:8px 10px;border-radius:0 6px 6px 0;line-height:1.5">' + item.e + '</div>';
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+  return html;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2304,7 +2353,7 @@ function retakeCourseQuiz(course){
 const CERT_COURSES = {
   aml: { title:'Anti-Money Laundering (AML) &amp;<br>Counter-Terrorist Financing (CTF) Awareness Training', dur:'30 Minutes', total:20, prefix:'AML-IRL' },
   ff:  { title:'Financial Fraud Awareness Training<br><span style="font-size:13px;font-weight:400;color:var(--mt)">Ireland</span>', dur:'45 Minutes', total:20, prefix:'FF-IRL' },
-  gd:  { title:'GDPR &amp; Data Protection<br>Awareness Training', dur:'60 Minutes', total:25, prefix:'GDPR-IRL' },
+  gd:  { title:'GDPR &amp; Data Protection<br>Awareness Training', dur:'60 Minutes', total:24, prefix:'GDPR-IRL' },
 };
 
 function showCertPass(course, score){
@@ -2315,6 +2364,7 @@ function showCertPass(course, score){
   s.certRef  = s.certRef || (meta.prefix + '-' + now.getFullYear() + '-' + (Math.floor(Math.random()*90000)+10000));
   s.certDate = now.toISOString();
   s.passed   = true;
+  const wrongList = STATE[course].wrongList || [];
   s.quizAnswers = {};
   persist();
   const labels = { aml:'AML & CTF Awareness Training', ff:'Financial Fraud Awareness Training', gd:'GDPR & Data Protection Awareness Training' };
@@ -2331,6 +2381,11 @@ function showCertPass(course, score){
   }
   const em = document.getElementById(course + '-cert-email'); if(em) em.textContent = USER_EMAIL;
   goSec(course + '-cert');
+  const passReview = document.getElementById(course + '-pass-review');
+  if(passReview){
+    const qs = course==='aml' ? AML_QS : course==='ff' ? FF_QS : GD_QS;
+    passReview.innerHTML = buildReview(qs, wrongList);
+  }
 
   // ── Auto-notify manager via Power Automate ──
   if(POWER_AUTOMATE_URL && USER_MGR){
@@ -2402,11 +2457,16 @@ function showCertPass(course, score){
 }
 
 function showQuizFail(course, score){
-  const meta = CERT_COURSES[course];
-  const pct  = Math.round(score / meta.total * 100);
-  const bnr  = document.getElementById(course + '-fail-bnr');
+  const meta     = CERT_COURSES[course];
+  const pct      = Math.round(score / meta.total * 100);
+  const bnr      = document.getElementById(course + '-fail-bnr');
   if(bnr) bnr.innerHTML = '<i class="ti ti-circle-x"></i> ' + score + '/' + meta.total + ' (' + pct + '%) \u2014 you need ' + QUIZ_PASS[course] + '/' + meta.total + ' (80%) to pass.';
   goSec(course + '-fail');
+  const failReview = document.getElementById(course + '-fail-review');
+  if(failReview){
+    const qs = course==='aml' ? AML_QS : course==='ff' ? FF_QS : GD_QS;
+    failReview.innerHTML = buildReview(qs, STATE[course].wrongList || []);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2481,31 +2541,30 @@ const FF_QS  = [
   { q:"What is the first action to take if you suspect fraud?", opts:["Conduct your own personal investigation","Report it through the correct internal procedures immediately","Contact the media","Ignore it and continue working"], c:1 }
 ];
 const GD_QS  = [
-  {q:"What does GDPR stand for?",opts:["General Data Privacy Rules","General Data Protection Regulation","Government Data Processing Regulation","Global Data Privacy Regulation"],c:1},
-  {q:"Which organisation enforces GDPR in Ireland?",opts:["Revenue Commissioners","An Garda S\u00edoch\u00e1na","Data Protection Commission (DPC)","Competition and Consumer Protection Commission"],c:2},
-  {q:"Which of the following is personal data?",opts:["An anonymous survey result","A company registration number","An employee's PPSN and home address","A published annual report"],c:2},
-  {q:"Which GDPR principle requires you to collect only the minimum data necessary for the task?",opts:["Accuracy","Purpose limitation","Data minimisation","Storage limitation"],c:2},
-  {q:"You collect a client's bank details for payment processing. A colleague wants to use those same details to send a Christmas voucher. Which principle does this risk violating?",opts:["Accuracy","Purpose limitation","Data minimisation","Integrity and confidentiality"],c:1},
-  {q:"What is special-category data?",opts:["Data belonging to high-value clients","Data about large financial transactions","Sensitive data such as health information, race, or trade union membership that requires extra protection","Data that is more than 5 years old"],c:2},
-  {q:"Which lawful basis is most appropriate for processing an employee's payroll data for Revenue filings?",opts:["Consent","Legitimate interests","Legal obligation","Vital interests"],c:2},
-  {q:"Under GDPR, how long must you keep Revenue and tax records in Ireland?",opts:["2 years","4 years","6 years","10 years"],c:2},
-  {q:"What must happen to personal data after its retention period has expired?",opts:["It can be archived indefinitely","It must be securely deleted or destroyed","It must be sent to the client","It is automatically covered by GDPR exemptions"],c:1},
-  {q:"A staff member emails a payslip to the wrong employee. What type of incident is this?",opts:["An internal administrative error that requires no action","A data breach that must be recorded and assessed","A minor oversight that only needs a verbal apology","A subject access request"],c:1},
-  {q:"Within how many hours must a notifiable data breach be reported to the Data Protection Commission (DPC)?",opts:["24 hours","48 hours","72 hours — all reporting must go through your Data Protection Officer first","7 days"],c:2},
-  {q:"Which of the following best describes a Subject Access Request (SAR)?",opts:["A request by Revenue for financial records","A request by an individual to see all personal data held about them","A request to delete all company records","A request from a client to correct an invoice"],c:1},
-  {q:"How long do you have to respond to a Subject Access Request (SAR)?",opts:["7 days","2 weeks","1 month","3 months"],c:2},
-  {q:"You are processing payroll data on behalf of a client. Under GDPR, what is your firm's role?",opts:["Data controller","Data subject","Data processor","Data supervisor"],c:2},
-  {q:"What document should be in place between your firm and each client for whom you process payroll?",opts:["A non-disclosure agreement (NDA)","A Data Processing Agreement (DPA)","A service level agreement (SLA)","An engagement letter only"],c:1},
-  {q:"Which of the following is the correct way to send payslips to employees by email?",opts:["One email to all employees with all payslips attached","Individual emails to each employee with only their own payslip","CC all employees on a single email","Share via a public link"],c:1},
-  {q:"An employee's sick leave record contains health information. Under GDPR, this is:",opts:["Standard personal data, no extra controls needed","Special-category data that requires stricter controls and a higher legal basis","Exempt from GDPR as it is employment data","Only protected if the employee requests it"],c:1},
-  {q:"A former client requests all personal data you hold about them. What should you do first?",opts:["Delete all their records immediately","Verify their identity before proceeding","Ask them to submit the request in writing only","Charge a fee before processing the request"],c:1},
-  {q:"Which of the following actions could constitute a data breach?",opts:["Filing a tax return on time","Sending a financial report to the correct client","Disposing of payroll documents in a general waste bin","Locking a filing cabinet containing client files"],c:2},
-  {q:"What is the maximum fine under GDPR for serious violations?",opts:["\u20ac500,000","\u20ac5 million","\u20ac20 million or 4% of global annual turnover (whichever is higher)","\u20ac1 million"],c:2},
-  {q:"Under GDPR, data minimisation means:",opts:["Storing data in the smallest possible file size","Collecting only the personal data that is necessary for the specific purpose","Keeping data for the minimum legal retention period","Anonymising all personal data"],c:1},
-  {q:"A third party asks you to provide a client's financial records. What should you do?",opts:["Provide them if they seem trustworthy","Provide them only if the client has given explicit written authorisation","Provide them if the request is made by email","Never provide client data to any third party under any circumstances"],c:1},
-  {q:"All data breaches, even minor ones, must be:",opts:["Immediately reported to the DPC","Reported to the affected individuals within 24 hours","Recorded in your internal breach register","Ignored unless a complaint is received"],c:2},
-  {q:"Which of the following is NOT a right granted to individuals under GDPR?",opts:["Right to access their personal data","Right to erasure","Right to receive compensation automatically for any breach","Right to restrict processing"],c:2},
-  {q:"What is the recommended certificate validity period for GDPR training at ABS Synergy?",opts:["6 months","1 year","2 years","5 years"],c:1}
+  {q:"What does GDPR stand for?",opts:["General Data Privacy Rules","General Data Protection Regulation","Government Data Processing Regulation","Global Data Privacy Regulation"],c:1,e:"GDPR stands for General Data Protection Regulation. It is EU law that came into effect on 25 May 2018 and governs how the personal data of EU residents must be handled by organisations."},
+  {q:"Which organisation enforces GDPR in Ireland?",opts:["Revenue Commissioners","An Garda S\u00edoch\u00e1na","Data Protection Commission (DPC)","Competition and Consumer Protection Commission"],c:2,e:"The Data Protection Commission (DPC) is Ireland's independent authority responsible for upholding GDPR rights. Do not contact the DPC directly — all suspected breaches must go through your Data Protection Officer first."},
+  {q:"Which of the following is personal data?",opts:["An anonymous survey result","A company registration number","An employee's PPSN and home address","A published annual report"],c:2,e:"Personal data is any information that can identify a living individual, directly or indirectly. A PPSN combined with a home address clearly and uniquely identifies a specific person."},
+  {q:"Which GDPR principle requires you to collect only the minimum data necessary for the task?",opts:["Accuracy","Purpose limitation","Data minimisation","Storage limitation"],c:2,e:"Data minimisation (Article 5(1)(c)) requires that personal data be adequate, relevant, and limited to what is necessary for the purpose. Collecting more data than you need is a GDPR violation."},
+  {q:"You collect a client's bank details for payment processing. A colleague wants to use those same details to send a Christmas voucher. Which principle does this risk violating?",opts:["Accuracy","Purpose limitation","Data minimisation","Integrity and confidentiality"],c:1,e:"Purpose limitation (Article 5(1)(b)) means data can only be used for the specific purpose for which it was collected. Using bank details for a voucher is a new and separate purpose that requires a fresh lawful basis."},
+  {q:"What is special-category data?",opts:["Data belonging to high-value clients","Data about large financial transactions","Sensitive data such as health information, race, or trade union membership that requires extra protection","Data that is more than 5 years old"],c:2,e:"Special-category data (Article 9) includes health, genetic, biometric data, racial or ethnic origin, political opinions, religious beliefs, trade union membership, and sexual orientation. It requires stricter controls and a higher lawful basis."},
+  {q:"Which lawful basis is most appropriate for processing an employee's payroll data for Revenue filings?",opts:["Consent","Legitimate interests","Legal obligation","Vital interests"],c:2,e:"Legal obligation (Article 6(1)(c)) applies when processing is necessary to comply with a legal requirement. Processing payroll data for Revenue filings is required under Irish tax law — consent is not appropriate here."},
+  {q:"Under GDPR, how long must you keep Revenue and tax records in Ireland?",opts:["2 years","4 years","6 years","10 years"],c:2,e:"Under the Taxes Consolidation Act 1997, Revenue and tax records must be retained for 6 years. This is a statutory requirement and takes precedence over GDPR's data minimisation principle for this specific category of data."},
+  {q:"What must happen to personal data after its retention period has expired?",opts:["It can be archived indefinitely","It must be securely deleted or destroyed","It must be sent to the client","It is automatically covered by GDPR exemptions"],c:1,e:"Storage limitation (Article 5(1)(e)) requires that personal data not be kept longer than necessary. After the retention period, data must be securely deleted or destroyed — shredded, overwritten, or disposed of via a confidential waste service."},
+  {q:"A staff member emails a payslip to the wrong employee. What type of incident is this?",opts:["An internal administrative error that requires no action","A data breach that must be recorded and assessed","A minor oversight that only needs a verbal apology","A subject access request"],c:1,e:"Sending personal data to an unintended recipient is a personal data breach under Article 4(12). It must be recorded in the internal breach register immediately and assessed to determine whether DPC notification is required within 72 hours."},
+  {q:"Within how many hours must a notifiable data breach be reported to the Data Protection Commission (DPC)?",opts:["24 hours","48 hours","72 hours — all reporting must go through your Data Protection Officer first","7 days"],c:2,e:"Article 33 requires notification to the DPC within 72 hours of becoming aware of a notifiable breach. Your responsibility as a staff member is to report immediately to your Data Protection Officer — management will determine if DPC notification is required."},
+  {q:"Which of the following best describes a Subject Access Request (SAR)?",opts:["A request by Revenue for financial records","A request by an individual to see all personal data held about them","A request to delete all company records","A request from a client to correct an invoice"],c:1,e:"A Subject Access Request (Article 15) gives individuals the right to know what personal data is held about them, why it is held, how long it will be kept, and who it is shared with. All SARs must be passed to the Data Protection Officer immediately."},
+  {q:"How long do you have to respond to a Subject Access Request (SAR)?",opts:["7 days","2 weeks","1 month","3 months"],c:2,e:"Under Article 12, responses to SARs must be provided within one month of receipt. This can be extended by two months for complex or multiple requests — but the individual must be notified of the extension and the reason."},
+  {q:"You are processing payroll data on behalf of a client. Under GDPR, what is your firm's role?",opts:["Data controller","Data subject","Data processor","Data supervisor"],c:2,e:"When you process personal data on behalf of another organisation (the controller), your firm is the data processor (Article 28). Processors act on the controller's instructions and must have a Data Processing Agreement (DPA) in place."},
+  {q:"What document should be in place between your firm and each client for whom you process payroll?",opts:["A non-disclosure agreement (NDA)","A Data Processing Agreement (DPA)","A service level agreement (SLA)","An engagement letter only"],c:1,e:"Article 28(3) requires a Data Processing Agreement (DPA) between every controller and processor. This legally binding contract governs how data is processed, secured, and returned or deleted at the end of the relationship."},
+  {q:"Which of the following is the correct way to send payslips to employees by email?",opts:["One email to all employees with all payslips attached","Individual emails to each employee with only their own payslip","CC all employees on a single email","Share via a public link"],c:1,e:"Each payslip contains personal and often special-category data. Sending all payslips in one email — whether in the To, CC or BCC fields — risks exposing employee data to colleagues. Each payslip must be sent individually to its rightful recipient only."},
+  {q:"An employee's sick leave record contains health information. Under GDPR, this is:",opts:["Standard personal data, no extra controls needed","Special-category data that requires stricter controls and a higher legal basis","Exempt from GDPR as it is employment data","Only protected if the employee requests it"],c:1,e:"Health information — including sick leave records — is special-category data under Article 9. It requires a higher lawful basis (typically Article 9(2)(b) — employment law necessity) and must be kept under stricter access controls."},
+  {q:"A former client requests all personal data you hold about them. What should you do first?",opts:["Delete all their records immediately","Verify their identity before proceeding","Ask them to submit the request in writing only","Charge a fee before processing the request"],c:1,e:"Before processing a Subject Access Request, you must verify the identity of the requestor (Article 12(6)). This prevents personal data being handed to the wrong person. Pass the request to the Data Protection Officer immediately after verifying identity."},
+  {q:"Which of the following actions could constitute a data breach?",opts:["Filing a tax return on time","Sending a financial report to the correct client","Disposing of payroll documents in a general waste bin","Locking a filing cabinet containing client files"],c:2,e:"Disposing of payroll documents — which contain names, earnings, PPS numbers, and bank details — in a general waste bin is a data breach. Personal data must be securely destroyed using a cross-cut shredder or a confidential waste service."},
+  {q:"What is the maximum fine under GDPR for serious violations?",opts:["\u20ac500,000","\u20ac5 million","\u20ac20 million or 4% of global annual turnover (whichever is higher)","\u20ac1 million"],c:2,e:"Under Article 83, the highest tier of GDPR fines is \u20ac20 million or 4% of global annual turnover, whichever is higher. These apply to serious infringements such as unlawful processing, violating core principles, or failing to respect data subject rights."},
+  {q:"Under GDPR, data minimisation means:",opts:["Storing data in the smallest possible file size","Collecting only the personal data that is necessary for the specific purpose","Keeping data for the minimum legal retention period","Anonymising all personal data"],c:1,e:"Data minimisation (Article 5(1)(c)) means collecting only what is adequate, relevant, and necessary for the stated purpose. You should never collect personal data speculatively — only gather what you genuinely need for the task at hand."},
+  {q:"A third party asks you to provide a client's financial records. What should you do?",opts:["Provide them if they seem trustworthy","Provide them only if the client has given explicit written authorisation","Provide them if the request is made by email","Never provide client data to any third party under any circumstances"],c:1,e:"Client financial records are confidential and contain personal data. You must never share them without explicit written authorisation from the client. Verbal requests or emails from unknown parties are not sufficient — always get it in writing and verified."},
+  {q:"All data breaches, even minor ones, must be:",opts:["Immediately reported to the DPC","Reported to the affected individuals within 24 hours","Recorded in your internal breach register","Ignored unless a complaint is received"],c:2,e:"Every data breach — even minor ones — must be recorded in an internal breach register (Article 33(5)). Not all breaches need to be reported to the DPC or individuals, but all must be documented so their risk level can be properly assessed."},
+  {q:"Which of the following is NOT a right granted to individuals under GDPR?",opts:["Right to access their personal data","Right to erasure","Right to receive compensation automatically for any breach","Right to restrict processing"],c:2,e:"GDPR grants individuals rights including access, rectification, erasure, restriction, portability, and objection. There is no automatic right to compensation — compensation claims must be pursued through the courts or via the DPC complaints process."}
 ];
 
 </script>
