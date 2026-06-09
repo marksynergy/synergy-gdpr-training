@@ -2338,7 +2338,37 @@ function showCertPass(course, score){
     const expDate = (function(){ const d = new Date(now); d.setFullYear(d.getFullYear()+1); return d.toLocaleDateString('en-IE',{day:'numeric',month:'long',year:'numeric'}); })();
     const labels = { aml:'AML & CTF Awareness Training', ff:'Financial Fraud Awareness Training', gd:'GDPR & Data Protection Awareness Training' };
     const subject = labels[course] + ' Completed \u2014 ' + USER_NAME + ' \u2014 ' + today;
-    const body = 'Dear Manager,\n\nThis is an automated notification to confirm that the following employee has successfully completed ' + labels[course] + '.\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nEMPLOYEE DETAILS\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nName:              ' + USER_NAME + '\nEmail:             ' + USER_EMAIL + '\nDate completed:    ' + today + '\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nASSESSMENT RESULT\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nCourse:      ' + labels[course] + '\nScore:       ' + score + '/' + meta.total + ' (' + pct + '%)\nPass mark:   80%\nResult:      PASSED\nCert No:     ' + s.certRef + '\nValid until: ' + expDate + '\n\nPlease retain this notification for compliance and audit purposes. The completion has also been logged automatically in the ABS Synergy Onboarding Completion Tracker.\n\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nThis is an automated message sent by the ABS Synergy Compliance Training Portal. Please do not reply to this email.\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500';
+    const htmlBody = '<div style="font-family:Arial,sans-serif;max-width:600px;color:#1a1a1a">'
+      + '<div style="background:#1D9E75;padding:20px 24px;border-radius:8px 8px 0 0">'
+      + '<div style="color:white;font-size:18px;font-weight:600">ABS Synergy Compliance Training</div>'
+      + '<div style="color:rgba(255,255,255,0.8);font-size:13px;margin-top:4px">Training Completion Notification</div>'
+      + '</div>'
+      + '<div style="background:#f9f9f7;border:1px solid #e2e0d8;border-top:none;padding:24px;border-radius:0 0 8px 8px">'
+      + '<p style="margin:0 0 16px">Dear Manager,</p>'
+      + '<p style="margin:0 0 20px">This is an automated notification to confirm that the following employee has successfully completed <strong>' + labels[course] + '</strong>.</p>'
+      + '<table style="width:100%;border-collapse:collapse;margin-bottom:20px">'
+      + '<tr style="background:#E1F5EE"><td colspan="2" style="padding:10px 12px;font-weight:600;font-size:13px;color:#0F6E56;border:1px solid #9FE1CB">EMPLOYEE DETAILS</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;width:140px;font-size:13px;color:#666;background:#fafaf8">Name</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;font-weight:500">' + USER_NAME + '</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;color:#666;background:#fafaf8">Email</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px">' + USER_EMAIL + '</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;color:#666;background:#fafaf8">Business unit</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px">' + getBusinessUnit() + '</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;color:#666;background:#fafaf8">Date completed</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px">' + today + '</td></tr>'
+      + '</table>'
+      + '<table style="width:100%;border-collapse:collapse;margin-bottom:20px">'
+      + '<tr style="background:#E1F5EE"><td colspan="2" style="padding:10px 12px;font-weight:600;font-size:13px;color:#0F6E56;border:1px solid #9FE1CB">ASSESSMENT RESULT</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;width:140px;font-size:13px;color:#666;background:#fafaf8">Course</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;font-weight:500">' + labels[course] + '</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;color:#666;background:#fafaf8">Score</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px">' + score + '/' + meta.total + ' (' + pct + '%)</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;color:#666;background:#fafaf8">Pass mark</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px">80%</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;color:#666;background:#fafaf8">Result</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;font-weight:600;color:#1D9E75">PASSED &#10003;</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;color:#666;background:#fafaf8">Certificate No</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px">' + s.certRef + '</td></tr>'
+      + '<tr><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px;color:#666;background:#fafaf8">Valid until</td><td style="padding:8px 12px;border:1px solid #e2e0d8;font-size:13px">' + expDate + '</td></tr>'
+      + '</table>'
+      + '<div style="background:#EBF8F1;border-left:3px solid #1D9E75;padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:20px">'
+      + '<div style="font-size:12px;font-weight:600;color:#0F6E56;margin-bottom:4px">CERTIFICATE SAVED</div>'
+      + '<div style="font-size:13px;color:#1a1a1a">The certificate has been saved automatically to the <strong>Compliance Certificates</strong> library in the ABS Synergy Onboarding Hub.</div>'
+      + '<div style="font-size:12px;color:#444;margin-top:4px">Folder: ' + FOLDER_NAME_MAP[course] + ' &nbsp;|&nbsp; File: ' + USER_NAME.replace(/[^a-zA-Z0-9]/g,'_') + '_' + s.certRef + '.html</div>'
+      + '</div>'
+      + '<p style="font-size:12px;color:#888;border-top:1px solid #e2e0d8;padding-top:12px;margin:0">Please retain this notification for compliance and audit purposes. The completion has also been logged automatically in the ABS Synergy Onboarding Completion Tracker.<br><br>This is an automated message sent by the ABS Synergy Compliance Training Portal. Please do not reply to this email.</p>'
+      + '</div></div>';
     const descs = {
       aml:'has successfully completed AML & CTF Awareness Training and demonstrated understanding of anti-money laundering procedures, customer due diligence, suspicious activity reporting, and compliance obligations applicable to their role at ABS Synergy Ltd.',
       ff:'has successfully completed Financial Fraud Awareness Training and demonstrated understanding of fraud prevention, detection of fraudulent activity, reporting obligations, and protective measures applicable to their role at ABS Synergy Ltd.',
@@ -2364,7 +2394,7 @@ function showCertPass(course, score){
         certRef: s.certRef,
         fileName: USER_NAME.replace(/[^a-zA-Z0-9]/g,'_') + '_' + s.certRef + '.html',
         emailSubject: subject,
-        emailBody: body,
+        emailBody: htmlBody,
         certificateHTML: certHtml
       })
     }).catch(function(){ /* silent fail — CSV download remains as backup */ });
