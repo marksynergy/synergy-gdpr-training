@@ -2078,12 +2078,12 @@ function statusBadge(course){
   return '<span class="tr-badge st-todo">Not started</span>';
 }
 function makeModCard(course){
-  const s          = STATE[course];
-  const p          = pct(course);
-  const mandatory  = getMandatory().includes(course);
-  const renewalDue = isRenewalDue(course);
-  const cardStatus = s.passed && !renewalDue ? 'Completed' : renewalDue ? 'Renewal due \u2014 click to retake' : s.slide > 0 ? 'In progress' : 'Not started';
-  const stCls      = s.passed && !renewalDue ? 'st-done' : renewalDue || s.slide > 0 ? 'st-prog' : 'st-todo';
+  const s         = STATE[course];
+  const p         = pct(course);
+  const mandatory = getMandatory().includes(course);
+  var   renewalDue = isRenewalDue(course);
+  var   cardStatus = s.passed && !renewalDue ? 'Completed' : renewalDue ? 'Renewal due \u2014 click to retake' : s.slide > 0 ? 'In progress' : 'Not started';
+  var   stCls      = s.passed && !renewalDue ? 'st-done' : renewalDue || s.slide > 0 ? 'st-prog' : 'st-todo';
   const icons   = { aml:'ti-shield-check', ff:'ti-alert-triangle', gd:'ti-lock' };
   const colors  = { aml:'background:var(--gl);color:var(--gd)', ff:'background:var(--cl);color:var(--c)', gd:'background:var(--bl);color:var(--b)' };
   const titles  = { aml:'AML &amp; CTF Awareness', ff:'Financial Fraud Awareness', gd:'GDPR &amp; Data Protection' };
