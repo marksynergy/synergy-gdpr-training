@@ -1861,6 +1861,19 @@ const POWER_AUTOMATE_URL = "https://defaultb084ff0296644e8b9f205ca1848289.40.env
 // Bookkeeping (Leanne): all three mandatory
 // All others: GDPR mandatory, AML and Fraud optional
 // ─────────────────────────────────────────────────────────────────
+const BUSINESS_UNIT_MAP = {
+  'leanne@synergybookkeeping.ie': 'Bookkeeping',
+  'jerome@synergyup.com':         'Synergy Up',
+  'luke@synergystocktaking.ie':   'Stocktaking',
+  'rachel@synergystocktaking.ie': 'Franchising',
+  'mark@synergystocktaking.ie':   'IT'
+};
+const FOLDER_NAME_MAP = {
+  aml: 'AML & CTF Awareness',
+  ff:  'Financial Fraud Awareness',
+  gd:  'GDPR & Data Protection'
+};
+function getBusinessUnit(){ return BUSINESS_UNIT_MAP[USER_MGR] || 'ABS Synergy'; }
 const MANAGER_RULES = {
   'leanne@synergybookkeeping.ie': ['aml','ff','gd'],
   'jerome@synergyup.com':         ['gd'],
@@ -2341,12 +2354,15 @@ function showCertPass(course, score){
         managerEmail: USER_MGR,
         moduleName: labels[course],
         moduleCode: course.toUpperCase(),
+        folderName: FOLDER_NAME_MAP[course],
+        businessUnit: getBusinessUnit(),
         score: score,
         totalQuestions: meta.total,
         percentage: pct,
         completionDate: today,
         validUntil: expDate,
         certRef: s.certRef,
+        fileName: USER_NAME.replace(/[^a-zA-Z0-9]/g,'_') + '_' + s.certRef + '.html',
         emailSubject: subject,
         emailBody: body,
         certificateHTML: certHtml
