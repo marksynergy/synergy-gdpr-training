@@ -2047,7 +2047,7 @@ function renderDash(){
     <div class="ov-stat"><div class="ov-n">${done}/3</div><div class="ov-l">Courses complete</div></div>
     <div class="ov-stat"><div class="ov-n">${amlPct}%</div><div class="ov-l">AML &amp; CTF</div></div>
     <div class="ov-stat"><div class="ov-n">${gdPct}%</div><div class="ov-l">GDPR</div></div>`;
-  document.getElementById('module-grid').innerHTML = makeModCard('aml') + makeModCard('ff') + makeModCard('gd');
+  document.getElementById('module-grid').innerHTML = makeModCard('gd') + makeModCard('aml') + makeModCard('ff');
   SELECTED = '';
   document.getElementById('launch-btn-wrap').style.display = 'none';
   const rows = [
